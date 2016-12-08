@@ -1,0 +1,69 @@
+BITCOIN and BLOCKCHAINS
+------------------------------------------------------------------------
+
+Blockchains are cryptographic technologies that underly Bitcoin and can
+be used for applications beyond confirming currency transactions.  It
+offers a way for people who do not know each other or trust each other
+to create a record chain of title of almost anything and compels the
+assent of each party.
+
+Also known generically as a "distributed ledger."
+
+For a non-Bitcoin example, see the Ethereum blockchain and the DAO
+contract using it (and how it blew up.)
+
+Usually, a trusted third party, like a bank who processes checks, is
+used in financial transactions.  The blockchain replaces the trusted
+third party.  For example, as to Bitcoin, a distributed database 
+contains the proof of who owns what at any point in time.  This
+distributed ledger is replicated on thousands of world-wide computers
+called nodes.
+
+When A wants to transfer BTC to B, each needs a wallet - software which
+accesses the blockchain.  No personal identification is used, only an
+"account" number.
+
+A initiates the transfer, and miners (special nodes) go through some
+steps to confirm that A has the BTC she wishes to transfer:
+
+    -this transfer is aggregated with many other proposed transfers into
+a proposed "block;"
+    -the proposed block goes through some mechanations and a hash is
+produced, which hash also identifies the previous block in the chain;
+    -the miners then all try to solve the hash, i.e., to produce a
+"proof-of-work;"
+    -the proof-of-work is then propogated to all the other nodes and
+miners who can then verify the new block.
+
+Some explanations:
+
+The miners get paid two ways:  on a sliding scale from an initial 50 BTC
+in 2008, halving every four years; May 2012 was at 25; later this year
+will halve to 12.5, etc;  they also get a fee or commission, which is
+optional and comes from each specific transaction.  Miners can choose,
+to some degree, which transactions to include in a block, so there is an
+incentive to pay a small fee.
+
+A proof-of-work is not really explained in sufficient detail anywhere
+I've found, but basically, the proof-of-work requires miners to find a
+nonce such that when the block content is hashed along with the nonce,
+the result is numerically smaller than the Bitcoin network's (i.e., the
+software's) "difficulty target."  The difficulty target is adjusted each
+2016 blocks to keep the average time between new blocks to 10 minutes.
+Interesting:  the number of nonces that must be tried, on average, is
+presently over 250 quintillion.  The definition of proof-of-work is "a
+piece of data which is difficult to produce but easy to verify."
+
+EXAMPLE:
+
+Say the base string to work on is "Hello World."  (In real life, it
+would be a hash of the proposed block.)  The target is to find a
+variation of "Hello World" that hashes to a value beginning with '000.'
+For example, a sha1sum hash of .xinitrc is 
+0a5d806c7d022d2c479b2e485e73d6c16f078dc1, so we want to add a nonce
+(starting with 1, 2, 3...) such that the sha2sum starts with "000."
+
+So there are still some questions like where (who produces) the hash,
+etc., but this is a start.
+
+Can buy bitcoins on an exchange, get some in a transaction, etc.

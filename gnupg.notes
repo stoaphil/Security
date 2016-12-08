@@ -1,0 +1,92 @@
+GENERAL NOTES ON GNUPG 
+
+Basics:
+
+------------------------------------------------------------------------
+
+pgp         the original "pretty good privacy;" proprietary
+openpgp     open version of pgp
+gnugp       GNU's version of openpgp
+
+    on any given OS, could see, for same installation, pgp, gpg, gnupg,
+    openpgp; a real mess
+
+all three of the above are for digital signatures/encryption of text
+
+------------------------------------------------------------------------
+
+ssl         secure sockets layer
+openssl     is an open-source implementation of the SSL and TLS protocols
+tls         transport layer security; successor to ssl
+gnutls      secure communications library (an API) implementing the SSL,
+            TLS and DTLS (datagram TLS, i.e., UDP layer)
+
+all four of the above for the secure transportation of messages; so, use
+tls to transport your pgp-encrypted and signed
+
+------------------------------------------------------------------------
+
+ssh         secure shell; proprietary a cryptographic network protocol for
+            secure data communication, remote command-line login, remote
+            command execution, and other secure network services between
+            two networked computers
+
+openssh     OpenBSD's version of ssh
+
+the above two are for secure remote network use and administration
+
+------------------------------------------------------------------------
+
+PGP On Thunderbird:
+
+    -Use enigmail plug-in (but don't have to); contains two applications:
+    digital signing and encryption of message body/attachments
+
+    -Use gnupg
+
+        On FreeBSD/PCBSD
+
+            -initially would not operate properly; first indication was 
+            when creating revocation certificate - would not generate
+            due to something called "ggp-agent"
+
+            -gpg-agent only found in 2.x.x versions of gnugp; prior
+            epoch 1.4.x still works and is the base for 2.x.x; see
+            enigmail handbook p.10
+
+            -in PCBSD, automatically installs 2.x.x; in FreeBSD, can
+            delete 2.x.x if necessary and add 1.4.x
+
+            -later determined must have "pinentry" option enabled in
+            gnupg build to work; cannot do this in PCBSD; erroneously
+            removed 2.x.x and installed 1.4.x on HP FreeBSD before
+            confirming
+
+            -BOTTOM LINE - either build gnupg with "pinentry" enabled (not
+            verified) or just use 1.4.x, which works
+
+
+        On Linux (both Arch and Slack)
+
+            -just follow instructions, will work
+
+
+        As installed as of 10.18-19.14:
+
+            -on HP FreeBSD, set up on live.com account only
+            -on 3500 Slack, set up on live.com account only
+            -on 755 Arch, set up on stoa only
+
+            -private, public, and revoking keys stored in seperate
+            directory on flash
+
+
+        To do:
+
+        -eventually, set up one machine with all accounts on same
+        keys, then export them as needed
+
+        -can use enigmail's bot, Adele, to test, but have not done so
+        yet.  See p. 57 handbook
+
+------------------------------------------------------------------------

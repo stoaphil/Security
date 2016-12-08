@@ -1,0 +1,138 @@
+Security Cheatsheet
+
+Implimentations:
+
+    SELinux
+        NSA Security-enhanced Linux is a set of patches to the Linux kernel and some 
+    utilities to incorporate a strong, flexible mandatory access control (MAC) 
+    architecture into the major subsystems of the kernel. It provides an enhanced 
+    mechanism to enforce the separation of information based on confidentiality and 
+    integrity requirements, which allows threats of tampering and bypassing of 
+    application security mechanisms to be addressed and enables the confinement of damage 
+    that can be caused by malicious or flawed applications. It includes a set of sample 
+    security policy configuration files designed to meet common, general-purpose security 
+    goals.
+
+    AppArmor
+        AppArmor ("Application Armor") is a Linux kernel security module that allows the 
+    system administrator to restrict programs' capabilities with per-program profiles. 
+    Profiles can allow capabilities like network access, raw socket access, and the 
+    permission to read, write, or execute files on matching paths. AppArmor supplements 
+    the traditional Unix discretionary access control (DAC) model by providing mandatory 
+    access control (MAC). It was included in the mainline Linux kernel since version 
+    2.6.36 and its development has been supported by Canonical since 2009.
+   
+    grsecurity
+        grsecurity is a set of patches for the Linux kernel which emphasize security 
+    enhancements. The patches are typically used by computer systems which accept 
+    remote connections from untrusted locations, such as web servers and systems offering 
+    shell access to its users. Grsecurity provides a collection of security features to 
+    the Linux kernel, including address space protection, enhanced auditing and process 
+    control. Work on grsecurity began in February 2001 as a port of Openwall Project's 
+    security-enhancing patches for version 2.4 of the Linux kernel mainline. The first 
+    release of grsecurity was for the Linux kernel 2.4.1.  A major component bundled with 
+    grsecurity is PaX. 
+
+    PaX
+        A patchset distributed through, but not developed by, grsecurity.  PaX is a 
+    patch for the Linux kernel that implements least privilege protections for memory 
+    pages. The least-privilege approach allows computer programs to do only what they have 
+    to do in order to be able to execute properly, and nothing more. PaX was first 
+    released in 2000. PaX flags data memory as non-executable, program memory as 
+    non-writable and randomly arranges the program memory. 
+
+Processes:
+
+    RELRO
+        This exploitation mitigation technique is known as RELRO which stands for 
+    RELocation Read-Only. The idea is simple, make the relocation sections that are used 
+    to resolve dynamically loaded functions read-only. This way, they cannot overwrite 
+    them and we cannot take control of execution.
+    
+        RELRO is a generic mitigation technique to harden the data sections of an ELF 
+    binary/process. There are two different "operation modes" of RELRO:
+
+        Partial RELRO
+            compiler command line: gcc -Wl,-z,relro
+            the ELF sections are reordered so that the ELF internal data sections (.got, 
+                .dtors, etc.) precede the program's data sections (.data and .bss)
+            non-PLT GOT is read-only
+            GOT is still writeable  (GOT??  OK - global offset table)
+        
+        Full RELRO
+            compiler command line: gcc -Wl,-z,relro,-z,now
+            supports all the features of partial RELRO
+            bonus: the entire GOT is also (re)mapped as read-only
+
+    ASLR
+        The goal of Address Space Layout Randomization is to introduce randomness
+   into addresses used by a given task. This will make a class of exploit
+   techniques fail with a quantifiable probability and also allow their
+   detection since failed attempts will most likely crash the attacked task.
+   
+        https://pax.grsecurity.net/docs/aslr.txt
+        
+        You can also check for ASLR on many linux systems by executing the following 
+    command: $ cat /proc/sys/kernel/randomize_va_space If ASLR is enabled, this command 
+    should return value greater than 0. The value indicates the ASLR status based on the 
+    following:
+
+        0 – ASLR disabled
+        1 – Shared libraries and PIE binaries are randomized (conservative)
+        2 – Adds randomizing the start of the brk area, along with conservative settings 
+            (full)
+
+    PIE/PIC
+        In computing, position-independent code (PIC) or position-independent executable 
+    (PIE) is a body of machine code that, being placed somewhere in the primary memory, 
+    executes properly regardless of its absolute address. PIC is commonly used for shared 
+    libraries, so that the same library code can be loaded in a location in each program 
+    address space where it will not overlap any other uses of memory (for example, other 
+    shared libraries). Position-independent executables (PIE) are executable binaries made 
+    entirely from position-independent code.
+    
+    stack canaries
+        Typically, buffer overflow protection modifies the organization of stack-allocated 
+    data so it includes a canary value that, when destroyed by a stack buffer overflow, 
+    shows that a buffer preceding it in memory has been overflowed. By verifying the 
+    canary value, execution of the affected program can be terminated, preventing it from 
+    misbehaving or from allowing an attacker to take control over it. 
+    
+    NX Bit
+        The NX bit, which stands for No-eXecute, is a technology used in CPUs to segregate 
+    areas of memory for use by either storage of processor instructions (code) or for 
+    storage of data, a feature normally only found in Harvard architecture processors. 
+    However, the NX bit is being increasingly used in conventional von Neumann 
+    architecture processors, for security reasons. An operating system with support for 
+    the NX bit may mark certain areas of memory as non-executable. The processor will 
+    then refuse to execute any code residing in these areas of memory. 
+    
+    W^X
+        W^X ("Write XOR Execute"; spoken as W xor X) is the name of a security feature in 
+    operating systems and virtual machines. It is a memory protection policy whereby 
+    every page in a process's or kernel's address space may be either writable or 
+    executable, but not both. The name comes from the XOR Boolean operator which puts out 
+    'true' only when either one or the other operand is true, but not both. Without such 
+    protection, a program can write (as data) CPU instructions in an area of memory 
+    intended for data and then arrange to run (as executable) those instructions. This can 
+    be dangerous if the writer of the memory is malicious.
+    W^X is relatively simple on processors which support fine-grained page permissions, 
+    such as Sun's SPARC and SPARC64, AMD's AMD64, Hewlett-Packard's PA-RISC, HP's 
+    (originally Digital Equipment Corporation's) Alpha, and ARM.
+    Some early Intel 64 processors lacked the NX bit required for W^X, but this appeared 
+    in later chips. On processors with more limited features, such as the Intel i386, W^X 
+    requires using the CS code segment limit as a "line in the sand", a point in the 
+    address space above which execution is not permitted and data is located, and below 
+    which it is allowed and executable pages are placed.[1]
+    Linker changes are generally required to separate code (such as trampolines and other 
+    code needed for linker and library runtime functions) and data.
+
+    checksec.sh
+        http://www.trapkit.de/tools/checksec.html
+    
+Webpages:
+
+    
+    http://www.cyberciti.biz/tips/selinux-vs-apparmor-vs-grsecurity.html
+    http://blogs.cisco.com/security/how_was_this_executable_built
+
